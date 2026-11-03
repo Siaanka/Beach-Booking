@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Booking — Terra & Tide</title>
+  <meta name="description" content="Reservasi destinasi wisata alam Terra & Tide. Pilih tanggal, jumlah pengunjung, dan layanan tambahan." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: { extend: {
+        fontFamily: { sans: ['Plus Jakarta Sans','sans-serif'] },
+        colors: {
+          primary:'#003629','primary-container':'#1B4D3E','primary-fixed':'#BAEED9',
+          surface:'#F9F9FF','surface-lowest':'#FFFFFF','surface-low':'#F0F3FF',
+          'surface-container':'#E7EEFF','surface-high':'#DEE8FF',
+          'on-surface':'#111C2D','on-surface-v':'#404945',
+          outline:'#707974','outline-v':'#C0C9C3',
+          secondary:'#904D00','secondary-c':'#FE932C','secondary-fixed':'#FFDCC3',
+          error:'#BA1A1A','error-c':'#FFDAD6',
+        }
+      }}
+    }
+  </script>
+  <link rel="stylesheet" href="../assets/css/main.css" />
+  <style>
+    .step-indicator { display:flex;align-items:center;gap:0;width:100%; }
+    .step-dot { width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;transition:all .2s; }
+    .step-dot.active { background:#003629;color:#fff; }
+    .step-dot.done   { background:#BAEED9;color:#003629; }
+    .step-dot.todo   { background:#E7EEFF;color:#707974; }
+    .step-line { flex:1;height:2px;background:#E7EEFF; }
+    .step-line.done { background:#BAEED9; }
+    .step-panel { display:none; }
+    .step-panel.active { display:block; }
+    .section-card { background:#fff;border-radius:0.75rem;padding:1rem;box-shadow:0 1px 4px rgba(17,28,45,0.07);margin-bottom:1rem; }
+    .sticky-cta { position:fixed;bottom:0;inset-inline:0;z-index:50;background:rgba(249,249,255,0.97);backdrop-filter:blur(12px);border-top:1px solid #C0C9C3;padding:0.875rem 1rem calc(0.875rem + env(safe-area-inset-bottom)); }
+    .facility-card { border:1.5px solid #C0C9C3;border-radius:0.75rem;padding:0.875rem;cursor:pointer;transition:all .15s;background:#fff; }
+    .facility-card:hover  { border-color:#003629;background:#F0F3FF; }
+    .facility-card.selected { border-color:#003629;background:#BAEED9/30; border-width:2px; }
+    .form-group { margin-bottom:1rem; }
+    .error-msg { color:#BA1A1A;font-size:0.75rem;margin-top:0.25rem;display:flex;align-items:center;gap:4px; }
+  </style>
+</head>
+<body class="bg-surface font-sans text-on-surface antialiased">
+
+  <!-- HEADER -->
+  <header class="fixed top-0 inset-x-0 z-50 bg-surface/90 backdrop-blur-xl border-b border-outline-v/40">
+    <div class="max-w-screen-lg mx-auto px-4 h-14 flex items-center gap-3">
+      <button id="btn-back" class="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-surface-low transition" aria-label="Kembali">
+        <span class="material-symbols-outlined text-[22px]">arrow_back</span>
+      </button>
+      <div class="flex-1">
+        <p class="text-xs text-on-surface-v font-500">Reservasi</p>
+        <h1 id="booking-dest-name" class="text-sm font-700 text-on-surface truncate">Memuat…</h1>
+      </div>
+    </div>
+  </header>
+
+  <main class="pt-14 pb-36 max-w-screen-lg mx-auto px-4">
+
+    <!-- STEP INDICATOR -->
+    <div class="py-5">
+      <div class="step-indicator">
+        <div id="step-dot-1" class="step-dot active" aria-label="Langkah 1: Jadwal">1</div>
+        <div id="step-line-1" class="step-line"></div>
+        <div id="step-dot-2" class="step-dot todo" aria-label="Langkah 2: Layanan">2</div>
+        <div id="step-line-2" class="step-line"></div>
+        <div id="step-dot-3" class="step-dot todo" aria-label="Langkah 3: Data Pemesan">3</div>
+        <div id="step-line-3" class="step-line"></div>
+        <div id="step-dot-4" class="step-dot todo" aria-label="Langkah 4: Konfirmasi">4</div>
+      </div>
+      <div class="flex justify-between mt-1.5 text-[10px] font-600 text-on-surface-v px-0">
+        <span>Jadwal</span><span>Layanan</span><span>Pemesan</span><span>Konfirmasi</span>
+      </div>
+    </div>
+
+    <!-- ════ STEP 1: PILIH JADWAL ════ -->
+    <div id="step-1" class="step-panel active">
+      <div class="section-card">
+        <h2 class="text-base font-700 mb-4 flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary text-[20px]">calendar_today</span>
+          Pilih Tanggal Kunjungan
+        </h2>
+        <div class="form-group">
+          <label class="label-form" for="visit-date">Tanggal Masuk *</label>
+          <input type="date" id="visit-date" class="input-field" required />
+          <div class="error-msg hidden" id="err-date">
+            <span class="material-symbols-outlined text-[13px]">error</span> Pilih tanggal kunjungan
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="label-form" for="visit-nights">Lama Menginap (malam)</label>
+          <div class="flex items-center gap-4 mt-1">
+            <button onclick="adjustNights(-1)" class="counter-btn" aria-label="Kurangi malam">
+              <span class="material-symbols-outlined text-[18px]">remove</span>
+            </button>
+            <span id="visit-nights-val" class="text-xl font-800 w-8 text-center">1</span>
+            <button onclick="adjustNights(1)" class="counter-btn" aria-label="Tambah malam">
+              <span class="material-symbols-outlined text-[18px]">add</span>
+            </button>
+            <span class="text-sm text-on-surface-v">malam</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <h2 class="text-base font-700 mb-4 flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary text-[20px]">group</span>
+          Jumlah Pengunjung
+        </h2>
+        <div class="flex items-center gap-4">
+          <button onclick="adjustPax(-1)" class="counter-btn w-11 h-11" aria-label="Kurangi pengunjung">
+            <span class="material-symbols-outlined text-[20px]">remove</span>
+          </button>
+          <div class="text-center">
+            <p id="pax-val" class="text-3xl font-800 text-primary leading-none">2</p>
+            <p class="text-xs text-on-surface-v mt-1">orang</p>
+          </div>
+          <button onclick="adjustPax(1)" class="counter-btn w-11 h-11" aria-label="Tambah pengunjung">
+            <span class="material-symbols-outlined text-[20px]">add</span>
+          </button>
+        </div>
+        <div class="error-msg hidden mt-2" id="err-pax">
+          <span class="material-symbols-outlined text-[13px]">error</span> Jumlah pengunjung minimal 1
+        </div>
+
+        <!-- Quota check display -->
+        <div id="quota-check-result" class="hidden mt-4 p-3 rounded-xl border text-sm"></div>
+      </div>
+    </div>
+
+    <!-- ════ STEP 2: PILIH LAYANAN ════ -->
+    <div id="step-2" class="step-panel">
+      <div class="section-card">
+        <h2 class="text-base font-700 mb-1 flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary text-[20px]">confirmation_number</span>
+          Tiket Masuk
+        </h2>
+        <p class="text-xs text-on-surface-v mb-3">Wajib dipilih untuk semua pengunjung</p>
+        <div id="entry-ticket-item" class="facility-card selected">
+          <!-- Diisi JS -->
+        </div>
+      </div>
+
+      <div class="section-card">
+        <h2 class="text-base font-700 mb-1 flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary text-[20px]">tent</span>
+          Fasilitas Tambahan
+        </h2>
+        <p class="text-xs text-on-surface-v mb-3">Opsional — dapat ditambah sesuai kebutuhan</p>
+        <div id="facilities-options" class="space-y-2">
+          <!-- Diisi JS -->
+        </div>
+      </div>
+
+      <!-- Price Summary -->
+      <div class="section-card bg-primary/5 border border-primary/20">
+        <h3 class="text-sm font-700 text-on-surface mb-3">Ringkasan Biaya</h3>
+        <div id="price-breakdown" class="space-y-2 text-sm"></div>
+        <div class="border-t border-primary/20 mt-3 pt-3 flex items-center justify-between">
+          <p class="text-sm font-700 text-on-surface">Total Estimasi</p>
+          <p id="total-price" class="text-base font-800 text-primary">Rp0</p>
+        </div>
+        <p class="text-[11px] text-on-surface-v mt-2">* Dibayar langsung di lokasi. Harga dapat berubah sesuai kebijakan pengelola.</p>
+      </div>
+    </div>
+
+    <!-- ════ STEP 3: DATA PEMESAN ════ -->
+    <div id="step-3" class="step-panel">
+      <div class="section-card">
+        <h2 class="text-base font-700 mb-4 flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary text-[20px]">person</span>
+          Data Pemesan
+        </h2>
+        <div class="form-group">
+          <label class="label-form" for="contact-name">Nama Lengkap *</label>
+          <input type="text" id="contact-name" class="input-field" placeholder="Nama sesuai KTP" autocomplete="name" required />
+          <div class="error-msg hidden" id="err-name">
+            <span class="material-symbols-outlined text-[13px]">error</span> Nama wajib diisi
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="label-form" for="contact-phone">Nomor Telepon/WhatsApp *</label>
+          <input type="tel" id="contact-phone" class="input-field" placeholder="08xx-xxxx-xxxx" autocomplete="tel" required />
+          <div class="error-msg hidden" id="err-phone">
+            <span class="material-symbols-outlined text-[13px]">error</span> Nomor telepon wajib diisi (min. 10 digit)
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="label-form" for="contact-email">Email (opsional)</label>
+          <input type="email" id="contact-email" class="input-field" placeholder="email@contoh.com" autocomplete="email" />
+        </div>
+      </div>
+
+      <!-- Terms -->
+      <div class="section-card">
+        <label class="flex items-start gap-3 cursor-pointer">
+          <input type="checkbox" id="agree-terms" class="mt-1 w-4 h-4 accent-primary shrink-0" />
+          <div>
+            <p class="text-sm font-600 text-on-surface">Saya menyetujui syarat dan ketentuan</p>
+            <p class="text-xs text-on-surface-v mt-1 leading-relaxed">
+              Saya memahami bahwa reservasi ini mengamankan kuota, tetapi
+              <strong>pembayaran dilakukan langsung di lokasi</strong>.
+              Booking dibatalkan jika saya tidak hadir tanpa konfirmasi sebelumnya.
+            </p>
+          </div>
+        </label>
+        <div class="error-msg hidden mt-2" id="err-terms">
+          <span class="material-symbols-outlined text-[13px]">error</span> Centang persetujuan untuk melanjutkan
+        </div>
+      </div>
+
+      <!-- Booking summary preview -->
+      <div class="section-card bg-surface-low border border-outline-v">
+        <h3 class="text-sm font-700 mb-3 flex items-center gap-2">
+          <span class="material-symbols-outlined text-[18px] text-primary">receipt_long</span>
+          Ringkasan Pemesanan
+        </h3>
+        <div id="booking-summary-preview" class="space-y-2 text-sm text-on-surface-v"></div>
+      </div>
+    </div>
+
+    <!-- ════ STEP 4: KONFIRMASI ════ -->
+    <div id="step-4" class="step-panel">
+      <!-- Success card -->
+      <div class="section-card text-center py-6">
+        <div class="w-16 h-16 bg-primary-fixed rounded-full flex items-center justify-center mx-auto mb-4">
+          <span class="material-symbols-outlined filled text-primary text-[32px]">check_circle</span>
+        </div>
+        <h2 class="text-lg font-800 text-on-surface mb-1">Reservasi Berhasil!</h2>
+        <p class="text-sm text-on-surface-v">Kode booking kamu telah dibuat.</p>
+      </div>
+
+      <!-- Booking code & QR -->
+      <div class="section-card text-center">
+        <p class="text-xs text-on-surface-v mb-2 font-600 uppercase tracking-wide">Kode Booking</p>
+        <p id="booking-code-display" class="text-2xl font-800 text-primary tracking-widest mb-4"></p>
+        <!-- QR visual placeholder -->
+        <div class="mx-auto w-44 h-44 bg-on-surface rounded-2xl flex items-center justify-center mb-3 p-3">
+          <svg id="qr-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+            <!-- Simple QR-like pattern (placeholder) -->
+            <rect width="100" height="100" fill="white" rx="4"/>
+            <!-- Top-left finder -->
+            <rect x="5" y="5" width="25" height="25" rx="3" fill="#111C2D"/>
+            <rect x="9" y="9" width="17" height="17" rx="1" fill="white"/>
+            <rect x="13" y="13" width="9" height="9" rx="1" fill="#111C2D"/>
+            <!-- Top-right finder -->
+            <rect x="70" y="5" width="25" height="25" rx="3" fill="#111C2D"/>
+            <rect x="74" y="9" width="17" height="17" rx="1" fill="white"/>
+            <rect x="78" y="13" width="9" height="9" rx="1" fill="#111C2D"/>
+            <!-- Bottom-left finder -->
+            <rect x="5" y="70" width="25" height="25" rx="3" fill="#111C2D"/>
+            <rect x="9" y="74" width="17" height="17" rx="1" fill="white"/>
+            <rect x="13" y="78" width="9" height="9" rx="1" fill="#111C2D"/>
+            <!-- Data modules (simplified) -->
+            <rect x="38" y="5" width="5" height="5" fill="#111C2D"/>
+            <rect x="46" y="5" width="5" height="5" fill="#111C2D"/>
+            <rect x="54" y="5" width="5" height="5" fill="#111C2D"/>
+            <rect x="38" y="13" width="5" height="5" fill="#111C2D"/>
+            <rect x="54" y="13" width="5" height="5" fill="#111C2D"/>
+            <rect x="5" y="38" width="5" height="5" fill="#111C2D"/>
+            <rect x="13" y="38" width="5" height="5" fill="#111C2D"/>
+            <rect x="5" y="46" width="5" height="5" fill="#111C2D"/>
+            <rect x="21" y="46" width="5" height="5" fill="#111C2D"/>
+            <rect x="37" y="37" width="5" height="5" fill="#111C2D"/>
+            <rect x="45" y="37" width="5" height="5" fill="#111C2D"/>
+            <rect x="53" y="37" width="5" height="5" fill="#111C2D"/>
+            <rect x="61" y="37" width="5" height="5" fill="#111C2D"/>
+            <rect x="37" y="45" width="5" height="5" fill="#111C2D"/>
+            <rect x="53" y="45" width="5" height="5" fill="#111C2D"/>
+            <rect x="61" y="45" width="5" height="5" fill="#111C2D"/>
+            <rect x="37" y="53" width="5" height="5" fill="#111C2D"/>
+            <rect x="45" y="53" width="5" height="5" fill="#111C2D"/>
+            <rect x="61" y="53" width="5" height="5" fill="#111C2D"/>
+            <rect x="37" y="61" width="5" height="5" fill="#111C2D"/>
+            <rect x="53" y="61" width="5" height="5" fill="#111C2D"/>
+            <rect x="37" y="69" width="5" height="5" fill="#111C2D"/>
+            <rect x="45" y="69" width="5" height="5" fill="#111C2D"/>
+            <rect x="53" y="69" width="5" height="5" fill="#111C2D"/>
+            <rect x="69" y="37" width="5" height="5" fill="#111C2D"/>
+            <rect x="77" y="37" width="5" height="5" fill="#111C2D"/>
+            <rect x="85" y="37" width="5" height="5" fill="#111C2D"/>
+            <rect x="69" y="45" width="5" height="5" fill="#111C2D"/>
+            <rect x="85" y="45" width="5" height="5" fill="#111C2D"/>
+            <rect x="77" y="53" width="5" height="5" fill="#111C2D"/>
+            <rect x="85" y="53" width="5" height="5" fill="#111C2D"/>
+            <rect x="69" y="61" width="5" height="5" fill="#111C2D"/>
+            <rect x="77" y="61" width="5" height="5" fill="#111C2D"/>
+            <rect x="69" y="77" width="5" height="5" fill="#111C2D"/>
+            <rect x="77" y="85" width="5" height="5" fill="#111C2D"/>
+            <rect x="85" y="69" width="5" height="5" fill="#111C2D"/>
+            <rect x="85" y="85" width="5" height="5" fill="#111C2D"/>
+          </svg>
+        </div>
+        <p class="text-xs text-on-surface-v">Tunjukkan QR ini kepada petugas saat tiba</p>
+        <p class="text-[11px] text-on-surface-v mt-1 italic">* QR ini adalah representasi visual. Implementasi nyata memerlukan generator QR yang valid.</p>
+      </div>
+
+      <!-- Detail konfirmasi -->
+      <div class="section-card">
+        <h3 class="text-sm font-700 mb-3">Detail Reservasi</h3>
+        <div id="confirmation-details" class="space-y-2 text-sm"></div>
+      </div>
+
+      <!-- Payment info -->
+      <div class="flex items-start gap-3 bg-secondary-fixed border border-secondary-c/30 rounded-xl p-3.5 mb-4">
+        <span class="material-symbols-outlined text-secondary text-[22px] mt-0.5 shrink-0">payments</span>
+        <div>
+          <p class="text-sm font-700 text-secondary">Cara Pembayaran di Lokasi</p>
+          <ol class="text-xs text-secondary/80 mt-1.5 space-y-1 list-decimal list-inside leading-relaxed">
+            <li>Tiba di destinasi sebelum pukul 17.00 WIB</li>
+            <li>Tunjukkan QR tiket kepada petugas check-in</li>
+            <li>Bayar tagihan di loket kasir (Tunai / QRIS)</li>
+            <li>Simpan struk sebagai bukti pembayaran</li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- Offline warning -->
+      <div class="flex items-start gap-3 bg-surface-container border border-outline-v rounded-xl p-3.5 mb-4">
+        <span class="material-symbols-outlined text-outline text-[20px] mt-0.5 shrink-0">signal_cellular_nodata</span>
+        <p class="text-xs text-on-surface-v leading-relaxed">
+          <strong class="text-on-surface">Perhatian:</strong> Area wisata mungkin memiliki sinyal yang lemah.
+          Screenshot tiket ini atau simpan halaman sebelum berangkat.
+        </p>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- STICKY CTA -->
+  <div class="sticky-cta">
+    <div class="max-w-screen-lg mx-auto flex items-center gap-3">
+      <button id="btn-prev" onclick="prevStep()"
+        class="h-12 px-4 border border-outline-v rounded-xl text-sm font-600 text-on-surface-v hover:bg-surface-low transition hidden flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+        Kembali
+      </button>
+      <button id="btn-next" onclick="nextStep()"
+        class="flex-1 h-12 bg-primary text-white rounded-xl font-700 text-sm flex items-center justify-center gap-2 hover:bg-primary-container transition-all active:scale-95">
+        <span id="btn-next-icon" class="material-symbols-outlined text-[20px]">arrow_forward</span>
+        <span id="btn-next-label">Pilih Layanan</span>
+      </button>
+    </div>
+  </div>
+
+  <script src="../assets/js/data.js"></script>
+  <script>
+    /* ── State ── */
+    const booking = {
+      dest:     null,
+      date:     '',
+      nights:   1,
+      pax:      2,
+      facilities: [],   // { id, name, qty, unitPrice, unit }
+      name:     '',
+      phone:    '',
+      email:    '',
+      code:     '',
+    };
+    let currentStep = 1;
+
+    /* ── Init ── */
+    const params = new URLSearchParams(window.location.search);
+    booking.dest = DESTINATIONS.find(d => d.slug === params.get('slug'));
+
+    if (!booking.dest) {
+      document.body.innerHTML = `<div class="flex flex-col items-center justify-center min-h-screen px-4 text-center">
+        <span class="material-symbols-outlined text-6xl text-outline mb-4">error</span>
+        <p class="font-700 text-lg mb-4">Destinasi tidak ditemukan</p>
+        <a href="../index.html" class="px-6 h-11 bg-primary text-white rounded-xl font-600 text-sm flex items-center gap-2">Kembali ke Katalog</a>
+      </div>`;
+    } else {
+      document.title = `Booking ${booking.dest.name} — Terra & Tide`;
+      document.getElementById('booking-dest-name').textContent = booking.dest.name;
+
+      // Set min date
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('visit-date').min = today;
+
+      // Back button
+      document.getElementById('btn-back').onclick = () => {
+        if (currentStep === 1) {
+          history.back();
+        } else {
+          prevStep();
+        }
+      };
+
+      // Init facilities options (Step 2)
+      initFacilitiesStep();
+    }
+
+    /* ── Stepper logic ── */
+    function goToStep(n) {
+      for (let i = 1; i <= 4; i++) {
+        document.getElementById(`step-${i}`).classList.toggle('active', i === n);
+        const dot = document.getElementById(`step-dot-${i}`);
+        if (i < n)       dot.className = 'step-dot done';
+        else if (i === n) dot.className = 'step-dot active';
+        else             dot.className = 'step-dot todo';
+        if (i < 4) {
+          const line = document.getElementById(`step-line-${i}`);
+          line.classList.toggle('done', i < n);
+        }
+      }
+      // Update step-dot icons for done steps
+      for (let i = 1; i < n; i++) {
+        document.getElementById(`step-dot-${i}`).innerHTML =
+          '<span class="material-symbols-outlined text-[14px]">check</span>';
+      }
+      // Restore numbers for current and future
+      for (let i = n; i <= 4; i++) {
+        if (document.getElementById(`step-dot-${i}`).innerHTML.includes('check')) {
+          document.getElementById(`step-dot-${i}`).textContent = i;
+        }
+      }
+
+      // CTA buttons
+      document.getElementById('btn-prev').classList.toggle('hidden', n === 1 || n === 4);
+      const nextBtn   = document.getElementById('btn-next');
+      const nextLabel = document.getElementById('btn-next-label');
+      const nextIcon  = document.getElementById('btn-next-icon');
+
+      if (n === 4) {
+        nextBtn.className = nextBtn.className.replace('bg-primary', 'bg-primary-container');
+        nextIcon.textContent = 'home';
+        nextLabel.textContent = 'Kembali ke Beranda';
+        nextBtn.onclick = () => window.location.href = '../index.html';
+      } else {
+        const labels = ['', 'Pilih Layanan', 'Data Pemesan', 'Konfirmasi Booking'];
+        nextLabel.textContent = labels[n] || 'Lanjut';
+        nextIcon.textContent  = 'arrow_forward';
+        nextBtn.onclick = nextStep;
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      currentStep = n;
+    }
+
+    function nextStep() {
+      if (!validateStep(currentStep)) return;
+      collectStep(currentStep);
+      if (currentStep === 3) {
+        submitBooking();
+      } else {
+        goToStep(currentStep + 1);
+        if (currentStep === 1) refreshPriceSummary(); // was step 1 before +1
+      }
+    }
+    function prevStep() { goToStep(currentStep - 1); }
+
+    /* ── Counter helpers ── */
+    function adjustNights(d) {
+      booking.nights = Math.max(1, Math.min(30, booking.nights + d));
+      document.getElementById('visit-nights-val').textContent = booking.nights;
+      refreshPriceSummary();
+    }
+    function adjustPax(d) {
+      booking.pax = Math.max(1, Math.min(100, booking.pax + d));
+      document.getElementById('pax-val').textContent = booking.pax;
+      refreshPriceSummary();
+    }
+
+    /* ── Facilities (Step 2) ── */
+    const EXTRA_FACILITIES = [
+      { id:'fac-gazebo', name:'Sewa Gazebo',       unit:'/ unit / malam', unitPrice: 75000, icon:'chair' },
+      { id:'fac-tent',   name:'Sewa Tenda',         unit:'/ tenda / malam', unitPrice: 50000, icon:'camping' },
+      { id:'fac-matras', name:'Sewa Matras',        unit:'/ lembar / malam', unitPrice: 20000, icon:'bed' },
+      { id:'fac-bbq',    name:'Paket BBQ',           unit:'/ paket',         unitPrice:150000, icon:'outdoor_grill' },
+      { id:'fac-guide',  name:'Pemandu Wisata',      unit:'/ orang',         unitPrice: 80000, icon:'tour' },
+    ];
+
+    function initFacilitiesStep() {
+      // Entry ticket (always selected)
+      document.getElementById('entry-ticket-item').innerHTML = `
+        <div class="flex items-center gap-3">
+          <span class="material-symbols-outlined filled text-primary text-[22px]">confirmation_number</span>
+          <div class="flex-1">
+            <p class="text-sm font-700 text-on-surface">Tiket Masuk</p>
+            <p class="text-xs text-on-surface-v">Per orang · Wajib untuk semua pengunjung</p>
+          </div>
+          <div class="text-right">
+            <p class="text-sm font-800 text-primary">${formatIDR(booking.dest.priceEntry)}</p>
+            <p class="text-xs text-on-surface-v">/ orang</p>
+          </div>
+          <span class="material-symbols-outlined filled text-primary-container text-[22px]">check_circle</span>
+        </div>
+      `;
+
+      // Extra facilities
+      const container = document.getElementById('facilities-options');
+      container.innerHTML = EXTRA_FACILITIES.map(f => `
+        <div class="facility-card" id="card-${f.id}" onclick="toggleFacility('${f.id}')">
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-primary text-[22px]">${f.icon}</span>
+            <div class="flex-1">
+              <p class="text-sm font-600 text-on-surface">${f.name}</p>
+              <p class="text-xs text-on-surface-v">${f.unit}</p>
+            </div>
+            <div class="text-right mr-3">
+              <p class="text-sm font-800 text-primary">${formatIDR(f.unitPrice)}</p>
+            </div>
+            <span class="material-symbols-outlined text-[22px] fac-check-${f.id}" style="color:#C0C9C3">radio_button_unchecked</span>
+          </div>
+          <!-- Qty counter (hidden when not selected) -->
+          <div class="fac-qty-${f.id} hidden mt-3 flex items-center gap-3 pl-9">
+            <button onclick="event.stopPropagation();adjustFacQty('${f.id}',-1)" class="counter-btn w-8 h-8">
+              <span class="material-symbols-outlined text-[16px]">remove</span>
+            </button>
+            <span id="qty-${f.id}" class="text-base font-700 w-6 text-center">1</span>
+            <button onclick="event.stopPropagation();adjustFacQty('${f.id}',1)" class="counter-btn w-8 h-8">
+              <span class="material-symbols-outlined text-[16px]">add</span>
+            </button>
+            <span class="text-xs text-on-surface-v">${f.unit}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function toggleFacility(id) {
+      const fac  = EXTRA_FACILITIES.find(f => f.id === id);
+      const card = document.getElementById(`card-${id}`);
+      const icon = document.querySelector(`.fac-check-${id}`);
+      const qty  = document.querySelector(`.fac-qty-${id}`);
+      const idx  = booking.facilities.findIndex(f => f.id === id);
+
+      if (idx === -1) {
+        booking.facilities.push({ id, name: fac.name, qty: 1, unitPrice: fac.unitPrice, unit: fac.unit });
+        card.classList.add('selected');
+        icon.textContent = 'check_circle'; icon.style.color = '#003629';
+        qty.classList.remove('hidden'); qty.style.display = 'flex';
+      } else {
+        booking.facilities.splice(idx, 1);
+        card.classList.remove('selected');
+        icon.textContent = 'radio_button_unchecked'; icon.style.color = '#C0C9C3';
+        qty.classList.add('hidden');
+      }
+      refreshPriceSummary();
+    }
+
+    function adjustFacQty(id, d) {
+      const idx = booking.facilities.findIndex(f => f.id === id);
+      if (idx === -1) return;
+      booking.facilities[idx].qty = Math.max(1, booking.facilities[idx].qty + d);
+      document.getElementById(`qty-${id}`).textContent = booking.facilities[idx].qty;
+      refreshPriceSummary();
+    }
+
+    /* ── Price Summary ── */
+    function refreshPriceSummary() {
+      if (!booking.dest) return;
+      const entryTotal = booking.dest.priceEntry * booking.pax;
+      const campTotal  = booking.dest.priceCamping * booking.nights;
+      const extraItems = booking.facilities.map(f => ({
+        label: f.name, amount: f.unitPrice * f.qty, unit: f.unit, qty: f.qty
+      }));
+      const extraTotal = extraItems.reduce((s, f) => s + f.amount, 0);
+      const grand = entryTotal + campTotal + extraTotal;
+
+      const breakdown = document.getElementById('price-breakdown');
+      const totalEl   = document.getElementById('total-price');
+      if (!breakdown || !totalEl) return;
+
+      breakdown.innerHTML = `
+        <div class="flex justify-between"><span class="text-on-surface-v">Tiket Masuk (${booking.pax} orang)</span><span class="font-600">${formatIDR(entryTotal)}</span></div>
+        <div class="flex justify-between"><span class="text-on-surface-v">Sewa Kavling (${booking.nights} malam)</span><span class="font-600">${formatIDR(campTotal)}</span></div>
+        ${extraItems.map(e => `
+          <div class="flex justify-between"><span class="text-on-surface-v">${e.label} (×${e.qty})</span><span class="font-600">${formatIDR(e.amount)}</span></div>
+        `).join('')}
+      `;
+      totalEl.textContent = `Rp${grand.toLocaleString('id-ID')}`;
+
+      // Update summary preview in step 3
+      updateBookingSummaryPreview(entryTotal, campTotal, extraItems, grand);
+    }
+
+    function updateBookingSummaryPreview(entryTotal, campTotal, extraItems, grand) {
+      const el = document.getElementById('booking-summary-preview');
+      if (!el || !booking.dest) return;
+      el.innerHTML = `
+        <div class="flex justify-between py-1 border-b border-outline-v"><span>Destinasi</span><span class="font-600 text-on-surface">${booking.dest.name}</span></div>
+        <div class="flex justify-between py-1 border-b border-outline-v"><span>Tanggal</span><span class="font-600 text-on-surface">${booking.date || '—'}</span></div>
+        <div class="flex justify-between py-1 border-b border-outline-v"><span>Lama Menginap</span><span class="font-600 text-on-surface">${booking.nights} malam</span></div>
+        <div class="flex justify-between py-1 border-b border-outline-v"><span>Pengunjung</span><span class="font-600 text-on-surface">${booking.pax} orang</span></div>
+        <div class="flex justify-between py-1 font-700 text-on-surface"><span>Total Estimasi</span><span class="text-primary">Rp${grand.toLocaleString('id-ID')}</span></div>
+      `;
+    }
+
+    /* ── Validation ── */
+    function validateStep(n) {
+      let valid = true;
+      const show = (id) => document.getElementById(id)?.classList.remove('hidden');
+      const hide = (id) => document.getElementById(id)?.classList.add('hidden');
+
+      if (n === 1) {
+        const date = document.getElementById('visit-date').value;
+        if (!date) { show('err-date'); valid = false; } else hide('err-date');
+        if (booking.pax < 1) { show('err-pax'); valid = false; } else hide('err-pax');
+      }
+      if (n === 3) {
+        const name  = document.getElementById('contact-name').value.trim();
+        const phone = document.getElementById('contact-phone').value.trim();
+        const terms = document.getElementById('agree-terms').checked;
+        if (!name)                              { show('err-name');  valid = false; } else hide('err-name');
+        if (!phone || phone.replace(/\D/g,'').length < 10) { show('err-phone'); valid = false; } else hide('err-phone');
+        if (!terms)                             { show('err-terms'); valid = false; } else hide('err-terms');
+      }
+      return valid;
+    }
+
+    /* ── Collect step data ── */
+    function collectStep(n) {
+      if (n === 1) {
+        booking.date   = document.getElementById('visit-date').value;
+        booking.nights = parseInt(document.getElementById('visit-nights-val').textContent);
+        booking.pax    = parseInt(document.getElementById('pax-val').textContent);
+      }
+      if (n === 3) {
+        booking.name  = document.getElementById('contact-name').value.trim();
+        booking.phone = document.getElementById('contact-phone').value.trim();
+        booking.email = document.getElementById('contact-email').value.trim();
+      }
+    }
+
+    /* ── Submit (simulated) ── */
+    function submitBooking() {
+      // Generate booking code
+      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      booking.code = 'TT-' + Array.from({length:6}, () => chars[Math.floor(Math.random()*chars.length)]).join('');
+
+      // Populate confirmation
+      document.getElementById('booking-code-display').textContent = booking.code;
+
+      const entryTotal = booking.dest.priceEntry * booking.pax;
+      const campTotal  = booking.dest.priceCamping * booking.nights;
+      const extraTotal = booking.facilities.reduce((s,f) => s + f.unitPrice * f.qty, 0);
+      const grand      = entryTotal + campTotal + extraTotal;
+
+      document.getElementById('confirmation-details').innerHTML = `
+        <div class="info-row py-2 border-b border-outline-v flex gap-3">
+          <span class="material-symbols-outlined text-[16px] text-outline mt-0.5">map</span>
+          <div class="flex-1"><p class="text-xs text-on-surface-v">Destinasi</p><p class="font-600">${booking.dest.name}</p></div>
+        </div>
+        <div class="info-row py-2 border-b border-outline-v flex gap-3">
+          <span class="material-symbols-outlined text-[16px] text-outline mt-0.5">calendar_today</span>
+          <div class="flex-1"><p class="text-xs text-on-surface-v">Tanggal Masuk</p><p class="font-600">${new Date(booking.date+'T00:00:00').toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}</p></div>
+        </div>
+        <div class="info-row py-2 border-b border-outline-v flex gap-3">
+          <span class="material-symbols-outlined text-[16px] text-outline mt-0.5">group</span>
+          <div class="flex-1"><p class="text-xs text-on-surface-v">Pengunjung</p><p class="font-600">${booking.pax} orang · ${booking.nights} malam</p></div>
+        </div>
+        <div class="info-row py-2 border-b border-outline-v flex gap-3">
+          <span class="material-symbols-outlined text-[16px] text-outline mt-0.5">person</span>
+          <div class="flex-1"><p class="text-xs text-on-surface-v">Pemesan</p><p class="font-600">${booking.name}</p><p class="text-xs text-on-surface-v">${booking.phone}</p></div>
+        </div>
+        <div class="py-2 flex gap-3">
+          <span class="material-symbols-outlined text-[16px] text-outline mt-0.5">receipt_long</span>
+          <div class="flex-1"><p class="text-xs text-on-surface-v">Total Tagihan (bayar di lokasi)</p><p class="text-base font-800 text-primary">Rp${grand.toLocaleString('id-ID')}</p></div>
+        </div>
+        <div class="flex items-center gap-2 mt-1 p-2 bg-surface-low rounded-lg">
+          <span class="badge badge-amber text-[11px]">MENUNGGU BAYAR DI LOKASI</span>
+          <span class="badge badge-green text-[11px]">TIKET SIAP CHECK-IN</span>
+        </div>
+      `;
+
+      goToStep(4);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,291 @@
+/* ============================================================
+   Terra & Tide — Main CSS
+   Design system: design.md tokens
+   ============================================================ */
+
+/* ── Google Fonts Material Symbols FILL variant ── */
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  font-family: 'Material Symbols Outlined', sans-serif;
+  user-select: none;
+  vertical-align: middle;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+}
+.material-symbols-outlined.filled {
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+/* ── Safe Area ── */
+.safe-top  { padding-top:    env(safe-area-inset-top); }
+.safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+
+/* ── Scrollbar hide ── */
+.scrollbar-hide { scrollbar-width: none; }
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+
+/* ── Chip buttons ── */
+.chip-btn {
+  display:          inline-flex;
+  align-items:      center;
+  gap:              0.25rem;
+  padding:          0.375rem 0.875rem;
+  border-radius:    9999px;
+  font-size:        0.8125rem;
+  font-weight:      600;
+  border:           1.5px solid #C0C9C3;
+  color:            #404945;
+  background:       #FFFFFF;
+  white-space:      nowrap;
+  cursor:           pointer;
+  transition:       all 0.15s ease;
+}
+.chip-btn:hover {
+  border-color:     #1B4D3E;
+  color:            #003629;
+  background:       #BAEED9;
+}
+.chip-active,
+.chip-btn.chip-active {
+  background:       #003629;
+  color:            #FFFFFF;
+  border-color:     #003629;
+}
+
+/* ── Bottom nav items ── */
+.bottom-nav-item {
+  display:          flex;
+  flex-direction:   column;
+  align-items:      center;
+  justify-content:  center;
+  gap:              2px;
+  color:            #707974;
+  text-decoration:  none;
+  transition:       color 0.15s ease;
+  padding:          6px 0;
+}
+.bottom-nav-item:hover { color: #1B4D3E; }
+.bottom-nav-active { color: #003629 !important; }
+.bottom-nav-active .material-symbols-outlined {
+  font-variation-settings: 'FILL' 1, 'wght' 600, 'GRAD' 0, 'opsz' 24;
+}
+
+/* ── Destination Card ── */
+.dest-card {
+  background:    #FFFFFF;
+  border-radius: 0.75rem;
+  overflow:      hidden;
+  box-shadow:    0 1px 4px 0 rgba(17,28,45,0.08), 0 0 0 1px rgba(17,28,45,0.04);
+  cursor:        pointer;
+  transition:    transform 0.2s ease, box-shadow 0.2s ease;
+}
+.dest-card:hover {
+  transform:     translateY(-2px);
+  box-shadow:    0 6px 20px 0 rgba(17,28,45,0.12), 0 0 0 1px rgba(17,28,45,0.06);
+}
+.dest-card-image {
+  width:          100%;
+  aspect-ratio:   16/10;
+  object-fit:     cover;
+  display:        block;
+  background:     #DEE8FF;
+}
+.dest-card-body { padding: 0.875rem 1rem 1rem; }
+
+/* ── Badge ── */
+.badge {
+  display:        inline-flex;
+  align-items:    center;
+  gap:            0.25rem;
+  padding:        0.1875rem 0.5rem;
+  border-radius:  9999px;
+  font-size:      0.6875rem;
+  font-weight:    700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space:    nowrap;
+}
+.badge-green  { background: #BAEED9; color: #003629; }
+.badge-amber  { background: #FFDCC3; color: #904D00; }
+.badge-red    { background: #FFDAD6; color: #BA1A1A; }
+.badge-blue   { background: #DEE8FF; color: #00324F; }
+.badge-gray   { background: #E7EEFF; color: #404945; }
+
+/* ── Quota meter (progress bar) ── */
+.quota-bar { height: 4px; border-radius: 9999px; background: #E7EEFF; overflow: hidden; }
+.quota-bar-fill { height: 100%; border-radius: 9999px; transition: width 0.4s ease; }
+.quota-bar-fill.green  { background: #003629; }
+.quota-bar-fill.amber  { background: #FE932C; }
+.quota-bar-fill.red    { background: #BA1A1A; }
+
+/* ── 7-Day Calendar Cell ── */
+.cal-cell {
+  display:         flex;
+  flex-direction:  column;
+  align-items:     center;
+  justify-content: center;
+  gap:             3px;
+  padding:         8px 4px;
+  border-radius:   0.5rem;
+  border:          1.5px solid transparent;
+  cursor:          pointer;
+  transition:      all 0.15s ease;
+  background:      #FFFFFF;
+  box-shadow:      0 1px 3px rgba(17,28,45,0.06);
+}
+.cal-cell:hover  { border-color: #1B4D3E; background: #BAEED9; }
+.cal-cell.selected { border-color: #003629; background: #003629; color: #FFFFFF !important; }
+.cal-cell.selected .cal-dot { background: #BAEED9 !important; }
+.cal-cell-day    { font-size: 0.625rem; font-weight: 600; color: #707974; text-transform: uppercase; }
+.cal-cell.selected .cal-cell-day { color: #BAEED9; }
+.cal-cell-date   { font-size: 0.875rem; font-weight: 700; color: #111C2D; }
+.cal-cell.selected .cal-cell-date { color: #FFFFFF; }
+.cal-cell-count  { font-size: 0.5625rem; font-weight: 700; }
+.cal-dot { width: 6px; height: 6px; border-radius: 50%; }
+
+/* ── Skeleton loading ── */
+.skeleton-card {
+  background:           linear-gradient(90deg, #E7EEFF 25%, #DEE8FF 50%, #E7EEFF 75%);
+  background-size:      200% 100%;
+  animation:            shimmer 1.4s infinite;
+}
+@keyframes shimmer {
+  0%   { background-position:  200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ── Modal ── */
+.modal-overlay {
+  position:    fixed;
+  inset:       0;
+  z-index:     100;
+  background:  rgba(17,28,45,0.5);
+  display:     flex;
+  align-items: flex-end;
+  justify-content: center;
+  backdrop-filter: blur(2px);
+}
+.modal-overlay.hidden { display: none; }
+.modal-sheet {
+  background:    #FFFFFF;
+  border-radius: 1.25rem 1.25rem 0 0;
+  padding:       1.25rem 1rem 2rem;
+  width:         100%;
+  max-width:     480px;
+  animation:     slide-up 0.25s ease;
+}
+@media (min-width:640px) {
+  .modal-overlay { align-items: center; }
+  .modal-sheet   { border-radius: 1rem; max-height: 90vh; overflow-y: auto; margin: 1rem; }
+}
+@keyframes slide-up {
+  from { transform: translateY(20px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+/* ── Form elements ── */
+.label-form {
+  display:       block;
+  font-size:     0.75rem;
+  font-weight:   600;
+  color:         #404945;
+  margin-bottom: 0.375rem;
+}
+.input-field {
+  display:          block;
+  width:            100%;
+  height:           2.75rem;
+  padding:          0 0.875rem;
+  background:       #F0F3FF;
+  border:           1.5px solid #C0C9C3;
+  border-radius:    0.5rem;
+  font-size:        0.875rem;
+  color:            #111C2D;
+  font-family:      'Plus Jakarta Sans', sans-serif;
+  transition:       border-color 0.15s, box-shadow 0.15s;
+  outline:          none;
+}
+.input-field:focus { border-color: #003629; box-shadow: 0 0 0 3px rgba(0,54,41,0.12); }
+
+/* ── Counter buttons ── */
+.counter-btn {
+  width:          2.25rem;
+  height:         2.25rem;
+  border-radius:  50%;
+  border:         1.5px solid #C0C9C3;
+  background:     #F0F3FF;
+  display:        flex;
+  align-items:    center;
+  justify-content:center;
+  cursor:         pointer;
+  transition:     all 0.15s;
+  color:          #003629;
+}
+.counter-btn:hover { background: #BAEED9; border-color: #003629; }
+
+/* ── Facility chips (on card) ── */
+.fac-chip {
+  display:     inline-flex;
+  align-items: center;
+  gap:         3px;
+  padding:     2px 8px;
+  border-radius: 9999px;
+  font-size:   0.625rem;
+  font-weight: 600;
+  background:  #F0F3FF;
+  color:       #404945;
+  border:      1px solid #C0C9C3;
+}
+
+/* ── Price highlight ── */
+.price-label {
+  font-size:   0.6875rem;
+  color:       #707974;
+  font-weight: 500;
+}
+.price-value {
+  font-size:   1rem;
+  font-weight: 700;
+  color:       #003629;
+  line-height: 1.2;
+}
+.price-unit {
+  font-size:   0.6875rem;
+  color:       #707974;
+  font-weight: 500;
+}
+
+/* ── Toast notification ── */
+.toast {
+  position:      fixed;
+  bottom:        5rem;
+  left:          50%;
+  transform:     translateX(-50%);
+  z-index:       200;
+  background:    #111C2D;
+  color:         #F9F9FF;
+  padding:       0.625rem 1.125rem;
+  border-radius: 9999px;
+  font-size:     0.8125rem;
+  font-weight:   600;
+  display:       flex;
+  align-items:   center;
+  gap:           0.5rem;
+  white-space:   nowrap;
+  animation:     toast-in 0.25s ease;
+  box-shadow:    0 4px 16px rgba(17,28,45,0.25);
+}
+@keyframes toast-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* ── Transitions ── */
+* { box-sizing: border-box; }
+a { text-decoration: none; color: inherit; }
+button { font-family: inherit; cursor: pointer; }
+
+/* ── Scrollbar thin ── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-thumb { background: #C0C9C3; border-radius: 4px; }

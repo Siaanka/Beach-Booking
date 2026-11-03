@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Dashboard Pengelola — Terra & Tide</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: { extend: {
+        fontFamily: { sans: ['Plus Jakarta Sans','sans-serif'] },
+        colors: {
+          primary:'#003629','primary-container':'#1B4D3E','primary-fixed':'#BAEED9','primary-dim':'#9ED1BD',
+          surface:'#F9F9FF','surface-lowest':'#FFFFFF','surface-low':'#F0F3FF','surface-container':'#E7EEFF','surface-high':'#DEE8FF',
+          'on-surface':'#111C2D','on-surface-v':'#404945',
+          outline:'#707974','outline-v':'#C0C9C3',
+          secondary:'#904D00','secondary-c':'#FE932C','secondary-fixed':'#FFDCC3',
+          tertiary:'#00324F',error:'#BA1A1A','error-c':'#FFDAD6',
+        }
+      }}
+    }
+  </script>
+  <link rel="stylesheet" href="../assets/css/main.css" />
+  <style>
+    .metric-card { background:#fff;border-radius:0.875rem;padding:1rem 1.125rem;box-shadow:0 1px 4px rgba(17,28,45,0.08); }
+    .section-card { background:#fff;border-radius:0.75rem;padding:1rem;box-shadow:0 1px 4px rgba(17,28,45,0.07);margin-bottom:1rem; }
+    .booking-row { display:flex;align-items:center;gap:0.75rem;padding:0.75rem 0;border-bottom:1px solid #E7EEFF; }
+    .booking-row:last-child { border-bottom:none; }
+    .nav-side-item { display:flex;align-items:center;gap:0.75rem;padding:0.625rem 0.875rem;border-radius:0.625rem;text-decoration:none;color:#404945;font-size:0.875rem;font-weight:600;transition:all .15s; }
+    .nav-side-item:hover { background:#F0F3FF;color:#003629; }
+    .nav-side-item.active { background:#BAEED9;color:#003629; }
+  </style>
+</head>
+<body class="bg-surface font-sans text-on-surface antialiased">
+
+  <!-- HEADER -->
+  <header class="fixed top-0 inset-x-0 z-50 bg-surface/90 backdrop-blur-xl border-b border-outline-v/40">
+    <div class="max-w-screen-xl mx-auto px-4 h-14 flex items-center gap-3">
+      <div class="flex items-center gap-2 shrink-0">
+        <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+          <span class="material-symbols-outlined text-white text-[18px]">camping</span>
+        </div>
+        <div class="leading-none">
+          <p class="text-[13px] font-800 text-primary">Terra &amp; Tide</p>
+          <p class="text-[10px] text-on-surface-v font-600 uppercase tracking-widest">Dashboard</p>
+        </div>
+      </div>
+      <!-- Destination selector -->
+      <div class="flex-1 flex justify-center">
+        <select class="bg-surface-low border border-outline-v rounded-lg px-3 h-8 text-sm font-600 text-on-surface focus:outline-none focus:border-primary">
+          <option>Pantai Kunjir</option>
+          <option>Buper Way Lalaan</option>
+        </select>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="badge badge-blue text-[10px]">PENGELOLA</span>
+        <div class="w-8 h-8 bg-primary-fixed rounded-full flex items-center justify-center font-800 text-primary text-sm">A</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="pt-14 flex max-w-screen-xl mx-auto">
+
+    <!-- SIDEBAR (desktop) -->
+    <aside class="hidden md:flex flex-col w-56 shrink-0 px-3 pt-6 pb-8 border-r border-outline-v/40 min-h-[calc(100vh-3.5rem)] sticky top-14">
+      <p class="text-[10px] font-700 text-on-surface-v uppercase tracking-widest px-2 mb-2">Operasional</p>
+      <nav class="space-y-0.5">
+        <a href="#" class="nav-side-item active"><span class="material-symbols-outlined text-[20px]">dashboard</span>Dashboard</a>
+        <a href="#" class="nav-side-item"><span class="material-symbols-outlined text-[20px]">event_available</span>Booking</a>
+        <a href="#" class="nav-side-item"><span class="material-symbols-outlined text-[20px]">point_of_sale</span>Kasir</a>
+        <a href="officer.html" class="nav-side-item"><span class="material-symbols-outlined text-[20px]">qr_code_scanner</span>Scanner</a>
+      </nav>
+      <p class="text-[10px] font-700 text-on-surface-v uppercase tracking-widest px-2 mb-2 mt-5">Pengaturan</p>
+      <nav class="space-y-0.5">
+        <a href="#" class="nav-side-item"><span class="material-symbols-outlined text-[20px]">edit_location</span>Profil Destinasi</a>
+        <a href="#" class="nav-side-item"><span class="material-symbols-outlined text-[20px]">calendar_month</span>Jadwal &amp; Kuota</a>
+        <a href="#" class="nav-side-item"><span class="material-symbols-outlined text-[20px]">sell</span>Harga &amp; Tarif</a>
+        <a href="#" class="nav-side-item"><span class="material-symbols-outlined text-[20px]">chair</span>Fasilitas</a>
+        <a href="#" class="nav-side-item"><span class="material-symbols-outlined text-[20px]">bar_chart</span>Laporan</a>
+      </nav>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 px-4 pt-6 pb-24 md:pb-8 min-w-0">
+
+      <!-- Context -->
+      <div class="flex items-center justify-between mb-5">
+        <div>
+          <h1 class="text-lg font-800">Dashboard Operasional</h1>
+          <p class="text-sm text-on-surface-v" id="today-label"></p>
+        </div>
+        <!-- Close schedule button -->
+        <button id="btn-close-schedule" onclick="toggleCloseConfirm()" class="flex items-center gap-1.5 px-4 h-9 border-2 border-error/40 text-error rounded-xl text-sm font-700 hover:bg-error-c transition">
+          <span class="material-symbols-outlined text-[18px]">lock</span>
+          Tutup Jadwal
+        </button>
+      </div>
+
+      <!-- CLOSE CONFIRM (hidden by default) -->
+      <div id="close-confirm" class="hidden bg-error-c border-2 border-error/40 rounded-xl p-4 mb-5">
+        <p class="font-700 text-error flex items-center gap-2">
+          <span class="material-symbols-outlined text-[20px]">warning</span>
+          Konfirmasi Penutupan Jadwal
+        </p>
+        <p class="text-sm text-error/80 mt-1.5 mb-3">Menutup jadwal akan menghentikan penerimaan booking baru. Booking yang sudah ada tidak dihapus.</p>
+        <div class="flex gap-2">
+          <button onclick="toggleCloseConfirm()" class="flex-1 h-10 border border-error/40 text-error rounded-lg text-sm font-600 hover:bg-error-c/50">Batal</button>
+          <button class="flex-1 h-10 bg-error text-white rounded-lg text-sm font-700 hover:brightness-90 transition">Ya, Tutup Jadwal</button>
+        </div>
+      </div>
+
+      <!-- METRICS GRID -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
+        <!-- Quota -->
+        <div class="metric-card col-span-2">
+          <div class="flex items-center justify-between mb-2">
+            <p class="text-xs font-700 text-on-surface-v uppercase tracking-wide">Kuota Hari Ini</p>
+            <span class="badge badge-amber text-[10px]">Sisa Sedikit</span>
+          </div>
+          <div class="flex items-end gap-2 mb-2">
+            <p class="text-3xl font-800 text-on-surface">38</p>
+            <p class="text-lg text-on-surface-v font-500 pb-0.5">/ 100</p>
+          </div>
+          <div class="quota-bar">
+            <div class="quota-bar-fill amber" style="width:38%"></div>
+          </div>
+          <p class="text-xs text-on-surface-v mt-1.5">62 slot telah terisi atau dipesan</p>
+        </div>
+
+        <!-- Check-ins -->
+        <div class="metric-card">
+          <p class="text-xs font-700 text-on-surface-v uppercase tracking-wide mb-2">Check-in</p>
+          <p class="text-2xl font-800 text-primary">47</p>
+          <p class="text-xs text-on-surface-v mt-1">pengunjung hari ini</p>
+          <div class="flex items-center gap-1 mt-2 text-xs text-primary font-600">
+            <span class="material-symbols-outlined text-[12px]">trending_up</span> +8 vs kemarin
+          </div>
+        </div>
+
+        <!-- Revenue -->
+        <div class="metric-card">
+          <p class="text-xs font-700 text-on-surface-v uppercase tracking-wide mb-2">Penerimaan Kasir</p>
+          <p class="text-xl font-800 text-primary leading-tight">Rp2,4jt</p>
+          <p class="text-xs text-on-surface-v mt-1">hari ini</p>
+          <div class="flex items-center gap-1 mt-2 text-xs text-on-surface-v">
+            <span class="material-symbols-outlined text-[12px]">info</span> Belum rekonsiliasi
+          </div>
+        </div>
+      </div>
+
+      <!-- CAPACITY WARNING -->
+      <div class="flex items-start gap-3 bg-secondary-fixed border border-secondary-c/30 rounded-xl p-3.5 mb-5">
+        <span class="material-symbols-outlined text-secondary text-[22px] mt-0.5 shrink-0">warning</span>
+        <div class="flex-1">
+          <p class="text-sm font-700 text-secondary">Kuota Mendekati Batas</p>
+          <p class="text-xs text-secondary/80 mt-0.5">Tersisa 38 dari 100 slot (38%). Pertimbangkan untuk menutup pendaftaran walk-in atau menambah kapasitas.</p>
+        </div>
+        <button class="shrink-0 h-8 px-3 bg-secondary text-white rounded-lg text-xs font-700 hover:brightness-105">Atur Kuota</button>
+      </div>
+
+      <!-- TODAY'S BOOKINGS -->
+      <div class="section-card">
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="text-sm font-700">Booking Hari Ini</h2>
+          <div class="flex gap-1.5">
+            <span class="badge badge-green text-[10px]">Konfirmasi 14</span>
+            <span class="badge badge-amber text-[10px]">Pending 3</span>
+          </div>
+        </div>
+
+        <!-- Filter row -->
+        <div class="flex gap-2 mb-3 overflow-x-auto scrollbar-hide">
+          <button class="chip-btn chip-active shrink-0 !text-xs">Semua</button>
+          <button class="chip-btn shrink-0 !text-xs">Belum Bayar</button>
+          <button class="chip-btn shrink-0 !text-xs">Sudah Check-in</button>
+          <button class="chip-btn shrink-0 !text-xs">Menunggu</button>
+        </div>
+
+        <!-- Booking rows -->
+        <div>
+          <div class="booking-row">
+            <div class="w-9 h-9 bg-primary-fixed rounded-lg flex items-center justify-center shrink-0 font-800 text-primary text-sm">A</div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-700 truncate">Andi Pratama</p>
+              <p class="text-xs text-on-surface-v">TT-K8MJ4X · 4 orang · 25 Okt</p>
+            </div>
+            <div class="flex flex-col items-end gap-1 shrink-0">
+              <span class="badge badge-green text-[10px]">CHECK-IN</span>
+              <span class="badge badge-amber text-[10px]">BELUM BAYAR</span>
+            </div>
+          </div>
+
+          <div class="booking-row">
+            <div class="w-9 h-9 bg-surface-container rounded-lg flex items-center justify-center shrink-0 font-800 text-on-surface-v text-sm">S</div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-700 truncate">Siti Rahayu</p>
+              <p class="text-xs text-on-surface-v">TT-D4E5F6 · 2 orang · 25 Okt</p>
+            </div>
+            <div class="flex flex-col items-end gap-1 shrink-0">
+              <span class="badge badge-green text-[10px]">CHECK-IN</span>
+              <span class="badge badge-blue text-[10px]">LUNAS</span>
+            </div>
+          </div>
+
+          <div class="booking-row">
+            <div class="w-9 h-9 bg-secondary-fixed rounded-lg flex items-center justify-center shrink-0 font-800 text-secondary text-sm">R</div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-700 truncate">Rudi Kurniawan</p>
+              <p class="text-xs text-on-surface-v">TT-G7H8J9 · 6 orang · 25 Okt</p>
+            </div>
+            <div class="flex flex-col items-end gap-1 shrink-0">
+              <span class="badge badge-gray text-[10px]">MENUNGGU</span>
+              <span class="badge badge-amber text-[10px]">BELUM BAYAR</span>
+            </div>
+          </div>
+
+          <div class="booking-row">
+            <div class="w-9 h-9 bg-error-c rounded-lg flex items-center justify-center shrink-0 font-800 text-error text-sm">M</div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-700 truncate">Maya Indah</p>
+              <p class="text-xs text-on-surface-v">TT-L2M3N4 · 3 orang · 25 Okt</p>
+            </div>
+            <div class="flex flex-col items-end gap-1 shrink-0">
+              <span class="badge badge-red text-[10px]">BATAL</span>
+            </div>
+          </div>
+        </div>
+
+        <button class="mt-3 w-full h-10 border border-outline-v rounded-xl text-sm font-600 text-on-surface-v hover:bg-surface-low transition">
+          Lihat Semua Booking
+        </button>
+      </div>
+
+      <!-- DAILY LIMIT CONTROL -->
+      <div class="section-card">
+        <h2 class="text-sm font-700 mb-3 flex items-center gap-2">
+          <span class="material-symbols-outlined text-[18px] text-primary">tune</span>
+          Batas Kapasitas Harian
+        </h2>
+        <div class="flex items-center gap-4">
+          <div class="flex-1">
+            <p class="text-xs text-on-surface-v mb-1">Kapasitas saat ini: <strong class="text-on-surface">100 orang</strong></p>
+            <div class="flex items-center gap-3">
+              <button onclick="adjustLimit(-10)" class="counter-btn w-9 h-9">
+                <span class="material-symbols-outlined text-[16px]">remove</span>
+              </button>
+              <span id="limit-val" class="text-xl font-800 text-primary w-12 text-center">100</span>
+              <button onclick="adjustLimit(10)" class="counter-btn w-9 h-9">
+                <span class="material-symbols-outlined text-[16px]">add</span>
+              </button>
+            </div>
+          </div>
+          <button class="h-10 px-4 bg-primary text-white rounded-xl text-sm font-700 hover:bg-primary-container transition shrink-0">
+            Simpan
+          </button>
+        </div>
+        <p class="text-xs text-on-surface-v mt-2">Perubahan batas akan berlaku mulai besok. Booking hari ini tidak terpengaruh.</p>
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    document.getElementById('today-label').textContent =
+      new Date().toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+
+    function toggleCloseConfirm() {
+      const el = document.getElementById('close-confirm');
+      el.classList.toggle('hidden');
+    }
+
+    let limitVal = 100;
+    function adjustLimit(d) {
+      limitVal = Math.max(10, Math.min(500, limitVal + d));
+      document.getElementById('limit-val').textContent = limitVal;
+    }
+  </script>
+</body>
+</html>

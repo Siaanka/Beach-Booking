@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Tiket Saya — Terra & Tide</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: { extend: {
+        fontFamily: { sans: ['Plus Jakarta Sans','sans-serif'] },
+        colors: {
+          primary:'#003629','primary-container':'#1B4D3E','primary-fixed':'#BAEED9',
+          surface:'#F9F9FF','surface-lowest':'#FFFFFF','surface-low':'#F0F3FF',
+          'surface-container':'#E7EEFF','surface-high':'#DEE8FF',
+          'on-surface':'#111C2D','on-surface-v':'#404945',
+          outline:'#707974','outline-v':'#C0C9C3',
+          secondary:'#904D00','secondary-c':'#FE932C','secondary-fixed':'#FFDCC3',
+          tertiary:'#00324F', error:'#BA1A1A','error-c':'#FFDAD6',
+        }
+      }}
+    }
+  </script>
+  <link rel="stylesheet" href="../assets/css/main.css" />
+  <style>
+    .ticket-card { background:#fff;border-radius:0.875rem;overflow:hidden;box-shadow:0 2px 8px rgba(17,28,45,0.1); }
+    .ticket-divider { position:relative;height:20px;display:flex;align-items:center;background:linear-gradient(to right,#F9F9FF 12px,transparent 12px,transparent calc(100% - 12px),#F9F9FF calc(100% - 12px)) }
+    .ticket-divider::before { content:'';position:absolute;left:-10px;top:50%;transform:translateY(-50%);width:20px;height:20px;border-radius:50%;background:#F9F9FF;box-shadow:inset -2px 0 4px rgba(17,28,45,0.06); }
+    .ticket-divider::after  { content:'';position:absolute;right:-10px;top:50%;transform:translateY(-50%);width:20px;height:20px;border-radius:50%;background:#F9F9FF;box-shadow:inset 2px 0 4px rgba(17,28,45,0.06); }
+    .ticket-divider-line    { flex:1;border-top:2px dashed #C0C9C3;margin:0 12px; }
+    .tab-active             { border-bottom:2.5px solid #003629;color:#003629;font-weight:700; }
+  </style>
+</head>
+<body class="bg-surface font-sans text-on-surface antialiased">
+
+  <header class="fixed top-0 inset-x-0 z-50 bg-surface/90 backdrop-blur-xl border-b border-outline-v/40">
+    <div class="max-w-screen-lg mx-auto px-4 h-14 flex items-center gap-3">
+      <a href="../index.html" class="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-surface-low" aria-label="Kembali">
+        <span class="material-symbols-outlined text-[22px]">arrow_back</span>
+      </a>
+      <h1 class="flex-1 text-base font-700">Tiket Saya</h1>
+    </div>
+  </header>
+
+  <!-- Offline banner -->
+  <div class="fixed top-14 inset-x-0 z-40 bg-secondary-fixed border-b border-secondary-c/30 px-4 py-2.5 flex items-center gap-2">
+    <span class="material-symbols-outlined text-secondary text-[18px]">signal_cellular_nodata</span>
+    <p class="text-xs text-secondary font-600">Area wisata mungkin minim sinyal. Screenshot tiket sebelum berangkat.</p>
+  </div>
+
+  <main class="pt-28 pb-24 max-w-screen-lg mx-auto">
+    <!-- TABS -->
+    <div class="flex border-b border-outline-v px-4">
+      <button id="tab-active" class="flex-1 py-3 text-sm font-600 tab-active transition-all" onclick="switchTab('active')">
+        Tiket Aktif <span class="ml-1.5 bg-primary text-white text-[10px] font-700 px-1.5 py-0.5 rounded-full">1</span>
+      </button>
+      <button id="tab-history" class="flex-1 py-3 text-sm font-600 text-on-surface-v hover:text-on-surface transition-all border-b-2 border-transparent" onclick="switchTab('history')">
+        Riwayat &amp; Batal
+      </button>
+    </div>
+
+    <!-- ACTIVE TICKETS -->
+    <div id="panel-active" class="px-4 pt-5 space-y-5">
+
+      <!-- Sample Active Ticket -->
+      <article class="ticket-card" aria-label="Tiket aktif: Pantai Kunjir">
+        <!-- Header Image -->
+        <div class="relative">
+          <img src="../assets/images/placeholder.svg" alt="Pantai Kunjir" class="w-full h-36 object-cover" />
+          <div class="absolute inset-0 bg-gradient-to-t from-on-surface/60 to-transparent"></div>
+          <div class="absolute bottom-3 left-3 right-3 flex items-end justify-between">
+            <div>
+              <p class="text-white text-xs opacity-80">Kec. Rajabasa, Tanggamus</p>
+              <p class="text-white font-800 text-base">Pantai Kunjir</p>
+            </div>
+            <span class="badge badge-green">TIKET SIAP CHECK-IN</span>
+          </div>
+        </div>
+
+        <!-- Ticket body -->
+        <div class="px-4 pt-3 pb-2">
+          <!-- Booking code -->
+          <div class="flex items-center justify-between mb-3">
+            <div>
+              <p class="text-[10px] text-on-surface-v font-600 uppercase tracking-wide">Kode Booking</p>
+              <p class="text-xl font-800 text-primary tracking-widest">TT-K8MJ4X</p>
+            </div>
+            <span class="badge badge-amber">MENUNGGU BAYAR</span>
+          </div>
+
+          <!-- Info grid -->
+          <div class="grid grid-cols-2 gap-2 mb-3">
+            <div class="bg-surface-low rounded-lg p-2.5">
+              <p class="text-[10px] text-on-surface-v">Tanggal Masuk</p>
+              <p class="text-sm font-700 mt-0.5">Sab, 25 Okt 2026</p>
+            </div>
+            <div class="bg-surface-low rounded-lg p-2.5">
+              <p class="text-[10px] text-on-surface-v">Lama Menginap</p>
+              <p class="text-sm font-700 mt-0.5">2 malam</p>
+            </div>
+            <div class="bg-surface-low rounded-lg p-2.5">
+              <p class="text-[10px] text-on-surface-v">Jumlah Tamu</p>
+              <p class="text-sm font-700 mt-0.5">4 orang</p>
+            </div>
+            <div class="bg-surface-low rounded-lg p-2.5">
+              <p class="text-[10px] text-on-surface-v">Status Pembayaran</p>
+              <p class="text-sm font-700 mt-0.5 text-secondary">Belum Bayar</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ticket divider -->
+        <div class="ticket-divider mx-4"><div class="ticket-divider-line"></div></div>
+
+        <!-- QR + Tagihan -->
+        <div class="px-4 pt-3 pb-4">
+          <p class="text-xs text-on-surface-v text-center mb-3">Tunjukkan QR ini kepada petugas saat tiba</p>
+          <!-- QR (placeholder) -->
+          <div class="mx-auto w-40 h-40 bg-on-surface rounded-xl flex items-center justify-center mb-3 p-3">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+              <rect width="100" height="100" fill="white" rx="3"/>
+              <rect x="5" y="5" width="25" height="25" rx="2" fill="#111C2D"/>
+              <rect x="9" y="9" width="17" height="17" rx="1" fill="white"/>
+              <rect x="13" y="13" width="9" height="9" fill="#111C2D"/>
+              <rect x="70" y="5" width="25" height="25" rx="2" fill="#111C2D"/>
+              <rect x="74" y="9" width="17" height="17" rx="1" fill="white"/>
+              <rect x="78" y="13" width="9" height="9" fill="#111C2D"/>
+              <rect x="5" y="70" width="25" height="25" rx="2" fill="#111C2D"/>
+              <rect x="9" y="74" width="17" height="17" rx="1" fill="white"/>
+              <rect x="13" y="78" width="9" height="9" fill="#111C2D"/>
+              <rect x="36" y="5" width="6" height="6" fill="#111C2D"/>
+              <rect x="44" y="5" width="6" height="6" fill="#111C2D"/>
+              <rect x="56" y="13" width="6" height="6" fill="#111C2D"/>
+              <rect x="36" y="36" width="6" height="6" fill="#111C2D"/>
+              <rect x="44" y="44" width="6" height="6" fill="#111C2D"/>
+              <rect x="56" y="36" width="6" height="6" fill="#111C2D"/>
+              <rect x="64" y="44" width="6" height="6" fill="#111C2D"/>
+              <rect x="36" y="52" width="6" height="6" fill="#111C2D"/>
+              <rect x="44" y="60" width="6" height="6" fill="#111C2D"/>
+              <rect x="56" y="52" width="6" height="6" fill="#111C2D"/>
+              <rect x="64" y="60" width="6" height="6" fill="#111C2D"/>
+              <rect x="36" y="68" width="6" height="6" fill="#111C2D"/>
+              <rect x="36" y="76" width="6" height="6" fill="#111C2D"/>
+              <rect x="44" y="76" width="6" height="6" fill="#111C2D"/>
+              <rect x="68" y="36" width="6" height="6" fill="#111C2D"/>
+              <rect x="76" y="44" width="6" height="6" fill="#111C2D"/>
+              <rect x="84" y="36" width="6" height="6" fill="#111C2D"/>
+              <rect x="68" y="68" width="6" height="6" fill="#111C2D"/>
+              <rect x="84" y="76" width="6" height="6" fill="#111C2D"/>
+              <rect x="76" y="84" width="6" height="6" fill="#111C2D"/>
+            </svg>
+          </div>
+
+          <!-- Tagihan -->
+          <div class="bg-secondary-fixed rounded-xl p-3 text-sm">
+            <p class="font-700 text-secondary mb-1.5 flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-[16px]">receipt</span>
+              Tagihan — Bayar di Loket
+            </p>
+            <div class="space-y-1 text-xs text-secondary/80">
+              <div class="flex justify-between"><span>Tiket Masuk (4 orang)</span><span>Rp60.000</span></div>
+              <div class="flex justify-between"><span>Sewa Kavling (2 malam)</span><span>Rp100.000</span></div>
+              <div class="border-t border-secondary-c/30 mt-1.5 pt-1.5 flex justify-between font-700 text-secondary">
+                <span>Total</span><span>Rp160.000</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action buttons -->
+          <div class="flex gap-2 mt-3">
+            <button class="flex-1 h-10 border border-outline-v rounded-xl text-sm font-600 text-on-surface-v hover:bg-surface-low transition flex items-center justify-center gap-1.5">
+              <span class="material-symbols-outlined text-[16px]">info</span> Detail
+            </button>
+            <button class="flex-1 h-10 border border-error/40 rounded-xl text-sm font-600 text-error hover:bg-error-c transition flex items-center justify-center gap-1.5">
+              <span class="material-symbols-outlined text-[16px]">cancel</span> Batalkan
+            </button>
+          </div>
+        </div>
+      </article>
+
+    </div>
+
+    <!-- HISTORY TICKETS (hidden) -->
+    <div id="panel-history" class="hidden px-4 pt-5 space-y-4">
+
+      <!-- Used ticket -->
+      <article class="ticket-card opacity-70" aria-label="Tiket sudah digunakan: Buper Way Lalaan">
+        <div class="relative">
+          <img src="../assets/images/placeholder.svg" alt="Buper Way Lalaan" class="w-full h-28 object-cover grayscale" />
+          <div class="absolute inset-0 bg-on-surface/40 flex items-center justify-center">
+            <span class="badge bg-on-surface/80 text-white text-sm px-4 py-1.5 rounded-full font-800 uppercase tracking-wider">SUDAH DIGUNAKAN</span>
+          </div>
+        </div>
+        <div class="px-4 py-3 flex items-center justify-between">
+          <div>
+            <p class="font-700 text-sm">Buper Way Lalaan</p>
+            <p class="text-xs text-on-surface-v mt-0.5">12 Okt 2026 · 3 orang · TT-X9PQ21</p>
+          </div>
+          <span class="badge badge-gray">LUNAS</span>
+        </div>
+      </article>
+
+      <!-- Cancelled ticket -->
+      <article class="ticket-card opacity-60" aria-label="Tiket dibatalkan">
+        <div class="bg-error-c px-4 py-3 flex items-center gap-3">
+          <span class="material-symbols-outlined text-error text-[22px]">cancel</span>
+          <div>
+            <p class="font-700 text-sm text-error">Reservasi Dibatalkan</p>
+            <p class="text-xs text-error/70 mt-0.5">Pantai Batu Lapis · 5 Okt 2026</p>
+          </div>
+          <span class="ml-auto badge badge-red">BATAL</span>
+        </div>
+        <div class="px-4 py-2.5">
+          <p class="text-xs text-on-surface-v">Kode: <span class="font-700 text-on-surface">TT-M3NR07</span></p>
+          <p class="text-xs text-on-surface-v mt-1">Reservasi dibatalkan oleh pemesan.</p>
+        </div>
+      </article>
+
+      <!-- Empty state (if no history) -->
+      <!-- Uncomment to show empty state:
+      <div class="text-center py-16">
+        <span class="material-symbols-outlined text-5xl text-outline mb-3 block">history</span>
+        <p class="font-600 text-on-surface">Belum ada riwayat</p>
+        <p class="text-sm text-on-surface-v mt-1">Riwayat tiket akan muncul di sini setelah kunjungan selesai</p>
+      </div>
+      -->
+    </div>
+
+  </main>
+
+  <!-- Bottom Navigation -->
+  <nav class="fixed bottom-0 inset-x-0 z-50 bg-surface/90 backdrop-blur-xl border-t border-outline-v/40 md:hidden safe-bottom" aria-label="Navigasi utama">
+    <div class="grid grid-cols-4 h-16">
+      <a href="../index.html" class="bottom-nav-item" aria-label="Eksplor">
+        <span class="material-symbols-outlined text-[24px]">explore</span>
+        <span class="text-[10px] font-600">Eksplor</span>
+      </a>
+      <a href="tickets.html" class="bottom-nav-item bottom-nav-active" aria-label="Tiket Saya">
+        <span class="material-symbols-outlined filled text-[24px]">confirmation_number</span>
+        <span class="text-[10px] font-600">Tiket Saya</span>
+      </a>
+      <a href="officer.html" class="bottom-nav-item" aria-label="Aktivitas">
+        <span class="material-symbols-outlined text-[24px]">qr_code_scanner</span>
+        <span class="text-[10px] font-600">Aktivitas</span>
+      </a>
+      <a href="profile.html" class="bottom-nav-item" aria-label="Profil">
+        <span class="material-symbols-outlined text-[24px]">account_circle</span>
+        <span class="text-[10px] font-600">Profil</span>
+      </a>
+    </div>
+  </nav>
+
+  <script>
+    function switchTab(tab) {
+      const isActive = tab === 'active';
+      document.getElementById('panel-active').classList.toggle('hidden', !isActive);
+      document.getElementById('panel-history').classList.toggle('hidden', isActive);
+      document.getElementById('tab-active').classList.toggle('tab-active', isActive);
+      document.getElementById('tab-history').classList.toggle('tab-active', !isActive);
+      document.getElementById('tab-active').classList.toggle('text-on-surface-v', !isActive);
+      document.getElementById('tab-history').classList.toggle('text-on-surface-v', isActive);
+    }
+  </script>
+</body>
+</html>

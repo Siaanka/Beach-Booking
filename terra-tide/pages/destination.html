@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Detail Destinasi — Terra & Tide</title>
+  <meta name="description" content="Informasi lengkap, fasilitas, harga, dan ketersediaan destinasi wisata alam Terra & Tide." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: { extend: {
+        fontFamily: { sans: ['Plus Jakarta Sans','sans-serif'] },
+        colors: {
+          primary:'#003629','primary-container':'#1B4D3E','primary-fixed':'#BAEED9',
+          surface:'#F9F9FF','surface-lowest':'#FFFFFF','surface-low':'#F0F3FF',
+          'surface-container':'#E7EEFF','surface-high':'#DEE8FF','surface-highest':'#D8E3FB',
+          'on-surface':'#111C2D','on-surface-v':'#404945',
+          outline:'#707974','outline-v':'#C0C9C3',
+          secondary:'#904D00','secondary-c':'#FE932C','secondary-fixed':'#FFDCC3',
+          tertiary:'#00324F',error:'#BA1A1A','error-c':'#FFDAD6',
+        }
+      }}
+    }
+  </script>
+  <link rel="stylesheet" href="../assets/css/main.css" />
+  <style>
+    .hero-img { width:100%;aspect-ratio:16/10;object-fit:cover;background:#DEE8FF; }
+    .section-card { background:#fff;border-radius:0.75rem;padding:1rem;box-shadow:0 1px 4px rgba(17,28,45,0.07); }
+    .info-row { display:flex;align-items:flex-start;gap:0.75rem;padding:0.625rem 0;border-bottom:1px solid #E7EEFF; }
+    .info-row:last-child { border-bottom:none; }
+    .sticky-cta { position:fixed;bottom:0;inset-inline:0;z-index:50;background:rgba(249,249,255,0.95);backdrop-filter:blur(12px);border-top:1px solid #C0C9C3;padding:0.875rem 1rem calc(0.875rem + env(safe-area-inset-bottom)); }
+  </style>
+</head>
+<body class="bg-surface font-sans text-on-surface antialiased">
+
+  <!-- HEADER -->
+  <header class="fixed top-0 inset-x-0 z-50 bg-surface/90 backdrop-blur-xl border-b border-outline-v/40">
+    <div class="max-w-screen-lg mx-auto px-4 h-14 flex items-center gap-3">
+      <a href="../index.html" class="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-surface-low transition" aria-label="Kembali">
+        <span class="material-symbols-outlined text-[22px]">arrow_back</span>
+      </a>
+      <h1 id="header-title" class="flex-1 text-sm font-700 truncate text-on-surface">Memuat…</h1>
+      <button class="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-surface-low transition" aria-label="Bagikan">
+        <span class="material-symbols-outlined text-[22px] text-on-surface-v">share</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="pt-14 pb-36">
+    <!-- HERO IMAGE -->
+    <div class="relative">
+      <img id="dest-hero" class="hero-img" src="../assets/images/placeholder.svg" alt="Foto destinasi"
+           onerror="this.src='../assets/images/placeholder.svg'" />
+      <div class="absolute inset-0 bg-gradient-to-t from-on-surface/40 to-transparent pointer-events-none"></div>
+      <!-- Category + Rating overlay -->
+      <div class="absolute bottom-3 left-3 right-3 flex items-end justify-between">
+        <span id="dest-category-badge" class="badge badge-blue text-xs px-3 py-1"></span>
+        <div class="flex items-center gap-1.5 bg-on-surface/60 rounded-full px-3 py-1">
+          <span class="material-symbols-outlined filled text-secondary-c text-[14px]">star</span>
+          <span id="dest-rating" class="text-white text-xs font-700"></span>
+          <span id="dest-reviews" class="text-white/80 text-xs"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="max-w-screen-lg mx-auto px-4 mt-5 space-y-4">
+
+      <!-- TITLE BLOCK -->
+      <div>
+        <h1 id="dest-name" class="text-xl font-800 text-on-surface leading-snug mb-1">Memuat…</h1>
+        <div class="flex items-center gap-1.5 text-sm text-on-surface-v">
+          <span class="material-symbols-outlined text-[16px]">location_on</span>
+          <span id="dest-location"></span>
+        </div>
+      </div>
+
+      <!-- QUOTA STATUS -->
+      <div id="quota-banner" class="section-card flex items-center gap-3">
+        <span id="quota-icon" class="material-symbols-outlined text-[28px]">check_circle</span>
+        <div class="flex-1">
+          <p id="quota-text-main" class="text-sm font-700"></p>
+          <div class="quota-bar mt-1.5">
+            <div id="quota-bar-fill" class="quota-bar-fill green" style="width:70%"></div>
+          </div>
+        </div>
+        <div class="text-right shrink-0">
+          <p id="quota-numbers" class="text-sm font-800 text-on-surface"></p>
+          <p class="text-xs text-on-surface-v">slot tersedia</p>
+        </div>
+      </div>
+
+      <!-- DESCRIPTION -->
+      <div class="section-card">
+        <h2 class="text-sm font-700 text-on-surface mb-2">Tentang Destinasi</h2>
+        <p id="dest-description" class="text-sm text-on-surface-v leading-relaxed"></p>
+      </div>
+
+      <!-- PRICING TABLE -->
+      <div class="section-card">
+        <h2 class="text-sm font-700 text-on-surface mb-3">Daftar Harga</h2>
+        <div id="pricing-table" class="space-y-0">
+          <!-- Diisi JS -->
+        </div>
+        <p class="text-[11px] text-on-surface-v mt-3 flex items-center gap-1">
+          <span class="material-symbols-outlined text-[13px]">payments</span>
+          Pembayaran dilakukan langsung di lokasi (Tunai / QRIS).
+          Harga sewaktu-waktu dapat berubah sesuai kebijakan pengelola.
+        </p>
+      </div>
+
+      <!-- FACILITIES -->
+      <div class="section-card">
+        <h2 class="text-sm font-700 text-on-surface mb-3">Fasilitas</h2>
+        <div id="facilities-list" class="flex flex-wrap gap-2">
+          <!-- Diisi JS -->
+        </div>
+      </div>
+
+      <!-- AVAILABILITY CALENDAR -->
+      <div class="section-card">
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="text-sm font-700 text-on-surface">Ketersediaan</h2>
+          <span class="text-xs text-on-surface-v">7 hari ke depan</span>
+        </div>
+        <div id="detail-calendar" class="grid grid-cols-7 gap-1.5"></div>
+        <div class="mt-3 flex items-center gap-4 text-xs text-on-surface-v">
+          <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-primary-fixed inline-block"></span>Tersedia</span>
+          <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-secondary-c inline-block"></span>Sisa Sedikit</span>
+          <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-error inline-block"></span>Penuh</span>
+        </div>
+      </div>
+
+      <!-- VISITING RULES -->
+      <div class="section-card">
+        <h2 class="text-sm font-700 text-on-surface mb-3 flex items-center gap-2">
+          <span class="material-symbols-outlined text-[18px] text-secondary">rule</span>
+          Aturan Kunjungan
+        </h2>
+        <ul class="space-y-2 text-sm text-on-surface-v">
+          <li class="flex items-start gap-2"><span class="material-symbols-outlined text-[14px] text-outline mt-0.5">chevron_right</span>Dilarang membuang sampah sembarangan</li>
+          <li class="flex items-start gap-2"><span class="material-symbols-outlined text-[14px] text-outline mt-0.5">chevron_right</span>Wajib menjaga ketertiban dan ketenangan</li>
+          <li class="flex items-start gap-2"><span class="material-symbols-outlined text-[14px] text-outline mt-0.5">chevron_right</span>Membawa perlengkapan P3K mandiri dianjurkan</li>
+          <li class="flex items-start gap-2"><span class="material-symbols-outlined text-[14px] text-outline mt-0.5">chevron_right</span>Reservasi mengamankan kuota hingga pukul 17.00 WIB</li>
+          <li class="flex items-start gap-2"><span class="material-symbols-outlined text-[14px] text-outline mt-0.5">chevron_right</span>Pembayaran dilakukan di loket saat tiba</li>
+        </ul>
+      </div>
+
+      <!-- PAYMENT INFO -->
+      <div class="flex items-start gap-3 bg-secondary-fixed border border-secondary-c/30 rounded-xl p-3.5">
+        <span class="material-symbols-outlined text-secondary text-[22px] mt-0.5 shrink-0">info</span>
+        <div>
+          <p class="text-sm font-700 text-secondary">Cara Pembayaran</p>
+          <p class="text-xs text-secondary/80 mt-1 leading-relaxed">
+            Setelah reservasi dikonfirmasi, tunjukkan <strong>QR tiket</strong> kepada petugas saat tiba.
+            Bayar di <strong>loket kasir</strong> menggunakan Tunai atau QRIS.
+            Booking tidak berarti pembayaran telah lunas.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- STICKY CTA -->
+  <div class="sticky-cta">
+    <div class="max-w-screen-lg mx-auto flex items-center gap-3">
+      <div class="flex-1">
+        <p id="cta-price-main" class="text-base font-800 text-primary"></p>
+        <p class="text-xs text-on-surface-v">+ biaya fasilitas pilihan</p>
+      </div>
+      <button id="btn-book-dest" onclick="goToBooking()"
+        class="px-6 h-12 bg-primary text-white rounded-xl font-700 text-sm flex items-center gap-2 hover:bg-primary-container transition-all active:scale-95 shrink-0">
+        <span class="material-symbols-outlined text-[20px]">tent</span>
+        Booking Sekarang
+      </button>
+    </div>
+  </div>
+
+  <script src="../assets/js/data.js"></script>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const slug = params.get('slug') || '';
+    const dest = DESTINATIONS.find(d => d.slug === slug);
+
+    if (!dest) {
+      document.getElementById('header-title').textContent = 'Destinasi tidak ditemukan';
+      document.querySelector('main').innerHTML = `
+        <div class="flex flex-col items-center justify-center min-h-[60vh] px-4 text-center">
+          <span class="material-symbols-outlined text-6xl text-outline mb-4">search_off</span>
+          <h1 class="text-lg font-700 mb-2">Destinasi Tidak Ditemukan</h1>
+          <p class="text-sm text-on-surface-v mb-6">Destinasi yang kamu cari tidak tersedia atau sudah tidak aktif.</p>
+          <a href="../index.html" class="px-6 h-11 bg-primary text-white rounded-xl font-600 text-sm flex items-center gap-2">
+            <span class="material-symbols-outlined text-[18px]">arrow_back</span> Kembali ke Katalog
+          </a>
+        </div>`;
+    } else {
+      // Populate data
+      document.title = `${dest.name} — Terra & Tide`;
+      document.getElementById('header-title').textContent   = dest.name;
+      document.getElementById('dest-hero').src             = '../' + dest.image;
+      document.getElementById('dest-hero').alt             = `Foto ${dest.name}`;
+      document.getElementById('dest-name').textContent     = dest.name;
+      document.getElementById('dest-location').textContent = dest.location;
+      document.getElementById('dest-description').textContent = dest.description;
+      document.getElementById('dest-rating').textContent   = dest.rating;
+      document.getElementById('dest-reviews').textContent  = `(${dest.reviewCount.toLocaleString('id-ID')} ulasan)`;
+      document.getElementById('dest-category-badge').textContent = getCategoryLabel(dest.category);
+
+      // Quota banner
+      const isFull = dest.quotaAvailable === 0;
+      const isLow  = dest.quotaAvailable / dest.quotaTotal <= 0.3;
+      const quotaBanner = document.getElementById('quota-banner');
+      const quotaIcon   = document.getElementById('quota-icon');
+      const quotaText   = document.getElementById('quota-text-main');
+      const quotaBar    = document.getElementById('quota-bar-fill');
+      const quotaNums   = document.getElementById('quota-numbers');
+      const pct = dest.quotaTotal > 0 ? Math.round(dest.quotaAvailable / dest.quotaTotal * 100) : 0;
+
+      quotaNums.textContent = `${dest.quotaAvailable}/${dest.quotaTotal}`;
+
+      if (isFull) {
+        quotaIcon.textContent = 'block'; quotaIcon.style.color = '#BA1A1A';
+        quotaText.textContent = 'Kuota Penuh — Tidak tersedia untuk tanggal ini';
+        quotaText.style.color = '#BA1A1A';
+        quotaBar.className    = 'quota-bar-fill red'; quotaBar.style.width = '100%';
+        quotaBanner.style.border = '1px solid #FFDAD6'; quotaBanner.style.background = '#FFDAD6';
+        document.getElementById('btn-book-dest').disabled = true;
+        document.getElementById('btn-book-dest').className = document.getElementById('btn-book-dest').className
+          .replace('bg-primary text-white hover:bg-primary-container', 'bg-surface-highest text-outline cursor-not-allowed');
+        document.getElementById('btn-book-dest').innerHTML = '<span class="material-symbols-outlined text-[20px]">block</span> Kuota Penuh';
+      } else if (isLow) {
+        quotaIcon.textContent = 'warning'; quotaIcon.style.color = '#904D00';
+        quotaText.textContent = `Sisa Sedikit — Segera pesan sebelum habis!`;
+        quotaText.style.color = '#904D00';
+        quotaBar.className    = 'quota-bar-fill amber'; quotaBar.style.width = pct + '%';
+        quotaBanner.style.border = '1px solid #FFDCC3'; quotaBanner.style.background = '#FFDCC3';
+      } else {
+        quotaIcon.textContent = 'check_circle'; quotaIcon.style.color = '#003629';
+        quotaText.textContent = 'Tersedia — Kuota masih cukup';
+        quotaText.style.color = '#003629';
+        quotaBar.className    = 'quota-bar-fill green'; quotaBar.style.width = pct + '%';
+        quotaBanner.style.border = '1px solid #BAEED9';
+      }
+
+      // Pricing table
+      const pricingRows = [
+        { label: 'Tiket Masuk', unit: '/ orang', price: dest.priceEntry, type: 'ENTRY' },
+        { label: 'Sewa Kavling Camping', unit: '/ malam', price: dest.priceCamping, type: 'CAMPING' },
+      ];
+      document.getElementById('pricing-table').innerHTML = pricingRows.map(r => `
+        <div class="info-row">
+          <span class="material-symbols-outlined text-[18px] text-outline mt-0.5 shrink-0">
+            ${r.type === 'ENTRY' ? 'confirmation_number' : 'tent'}
+          </span>
+          <div class="flex-1">
+            <p class="text-sm font-600 text-on-surface">${r.label}</p>
+            <p class="text-xs text-on-surface-v">Satuan: ${r.unit}</p>
+          </div>
+          <div class="text-right">
+            <p class="text-sm font-800 text-primary">${formatIDR(r.price)}</p>
+            <p class="text-xs text-on-surface-v">${r.unit}</p>
+          </div>
+        </div>
+      `).join('');
+
+      // CTA price
+      document.getElementById('cta-price-main').textContent = `Mulai ${formatIDR(dest.priceEntry)} / orang`;
+
+      // Facilities
+      const facIcons = { 'Toilet Umum':'wc','Toilet Bersih':'wc','Toilet & MCK':'wc','Area Parkir':'local_parking','Warung Makan':'restaurant','Warung':'restaurant','Spot Foto':'photo_camera','Air Bersih':'water_drop','Mushola':'mosque','Tempat Sampah':'delete','Gazebo':'chair','Area Foto':'photo_camera','Parkir Luas':'local_parking' };
+      document.getElementById('facilities-list').innerHTML = dest.facilities.map(f => `
+        <span class="flex items-center gap-1.5 bg-surface-low border border-outline-v rounded-lg px-3 py-2 text-sm font-600">
+          <span class="material-symbols-outlined text-primary text-[16px]">${facIcons[f] || 'check'}</span>
+          ${f}
+        </span>
+      `).join('');
+
+      // Calendar
+      const calData = generateCalendarData();
+      const calContainer = document.getElementById('detail-calendar');
+      calData.forEach((day, idx) => {
+        const cell = document.createElement('button');
+        cell.className = 'cal-cell' + (day.isToday ? ' selected' : '');
+        const dotColor  = day.status === 'full' ? '#BA1A1A' : day.status === 'low' ? '#FE932C' : '#003629';
+        const countText = day.status === 'full' ? 'PENUH' : day.quota;
+        const countColor= day.status === 'full' ? '#BA1A1A' : day.status === 'low' ? '#904D00' : '#003629';
+        cell.innerHTML = `
+          <span class="cal-cell-day">${day.dayLabel}</span>
+          <span class="cal-cell-date">${day.dateNum}</span>
+          <span class="cal-dot" style="background:${dotColor}"></span>
+          <span class="cal-cell-count" style="color:${countColor}">${countText}</span>`;
+        cell.addEventListener('click', () => {
+          document.querySelectorAll('#detail-calendar .cal-cell').forEach(c => c.classList.remove('selected'));
+          cell.classList.add('selected');
+        });
+        calContainer.appendChild(cell);
+      });
+    }
+
+    function getCategoryLabel(cat) {
+      return {beach:'Pantai',camping:'Camping',hiking:'Pendakian',forest:'Hutan Pinus',lake:'Tepi Danau'}[cat] || cat;
+    }
+
+    function goToBooking() {
+      window.location.href = `booking.html?slug=${slug}`;
+    }
+  </script>
+</body>
+</html>
